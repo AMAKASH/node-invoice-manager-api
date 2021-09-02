@@ -1,0 +1,19 @@
+html{
+   margin: 0;
+   padding: 0; 
+}
+
+.container{
+    background-color: rgb(41, 199, 139);
+    display: block;
+    align-items:center;
+    justify-content: center;
+}
+.container h1{
+    display: block;
+    flex-direction: column;
+}
+
+#btn{
+    align-self: center;
+}
