@@ -1,5 +1,6 @@
 const Admin = require("../models/admin");
 const { StatusCodes } = require("http-status-codes");
+const path = require("path");
 const {
   BadRequestError,
   UnauthenticatedError,
@@ -7,19 +8,27 @@ const {
 } = require("../errors");
 
 const index = (req, res) => {
-  res.send("Index Page");
+  const filePath = path.resolve(__dirname + "/../views/index.html");
+  return res.sendFile(filePath);
 };
 
 const login = (req, res) => {
-  res.send("Login Page");
+  if (req.session.user && req.session.user.isAuth) {
+    res.redirect("/");
+  } else {
+    const filePath = path.resolve(__dirname + "/../views/login.html");
+    return res.sendFile(filePath);
+  }
 };
 
 const changeCred = (req, res) => {
-  res.send(" Chnge Cred Page");
+  const filePath = path.resolve(__dirname + "/../views/secret.html");
+  return res.sendFile(filePath);
 };
 
 const adminPanel = (req, res) => {
-  res.send("Admin page");
+  const filePath = path.resolve(__dirname + "/../views/adminPanel.html");
+  res.sendFile(filePath);
 };
 
 const authLogin = async (req, res) => {
@@ -38,7 +47,15 @@ const authLogin = async (req, res) => {
   if (!isVerified) {
     throw new UnauthenticatedError("Invalid Credentials");
   }
-
+  const user = {
+    userID: "Admin",
+    isAuth: true,
+    isAdmin: true,
+  };
+  const day = 24 * 60 * 60 * 1000;
+  req.session.cookie.expires = new Date(Date.now() + day);
+  req.session.cookie.maxAge = day;
+  req.session.user = { ...user };
   const token = admin.createJWT();
   res.status(StatusCodes.OK).json({ token, msg: "Admin login Successful" });
 };

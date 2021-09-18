@@ -9,11 +9,11 @@ const {
 
 const router = express.Router();
 
-router.route("/").get(getAllClients);
+router.route("/").get(getAllClients).post(createClient);
 router
   .route("/:id")
   .get(getClient)
-  .post(createClient)
+
   .patch(updateClient)
   .delete(deleteClient);
 
