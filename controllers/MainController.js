@@ -1,6 +1,5 @@
 const Admin = require("../models/admin");
 const { StatusCodes } = require("http-status-codes");
-const path = require("path");
 const {
   BadRequestError,
   UnauthenticatedError,
@@ -8,27 +7,23 @@ const {
 } = require("../errors");
 
 const index = (req, res) => {
-  const filePath = path.resolve(__dirname + "/../views/index.html");
-  return res.sendFile(filePath);
+  res.render("index");
 };
 
 const login = (req, res) => {
   if (req.session.user && req.session.user.isAuth) {
     res.redirect("/");
   } else {
-    const filePath = path.resolve(__dirname + "/../views/login.html");
-    return res.sendFile(filePath);
+    return res.render("login");
   }
 };
 
 const changeCred = (req, res) => {
-  const filePath = path.resolve(__dirname + "/../views/secret.html");
-  return res.sendFile(filePath);
+  return res.render("secret");
 };
 
 const adminPanel = (req, res) => {
-  const filePath = path.resolve(__dirname + "/../views/adminPanel.html");
-  res.sendFile(filePath);
+  return res.render("adminPanel");
 };
 
 const authLogin = async (req, res) => {

@@ -2,9 +2,6 @@
 require("express-async-errors");
 require("dotenv").config();
 const express = require("express");
-const session = require("express-session");
-const mongoDBSession = require("connect-mongodb-session")(session);
-
 //secuirty imports
 
 const helmet = require("helmet");
@@ -13,9 +10,10 @@ const xss = require("xss-clean");
 const rateLimiter = require("express-rate-limit");
 
 //connectDB
-const connectDB = require("./db/connect");
+const connectDB = require("./utils/connect");
 
 //custom imports
+const sessionHandler = require("./utils/session");
 const errorHandlerMiddleware = require("./middlewares/errorHandler");
 const notFoundMiddleware = require("./middlewares/not-found");
 const authentication = require("./middlewares/authentication");
@@ -24,25 +22,14 @@ const serviceRouter = require("./routes/serviceRouter");
 const clientRouter = require("./routes/clientRouter");
 const invoiceRouter = require("./routes/invoiceRouter");
 
-//init app
+//init app & config
 const app = express();
-
-//session options
-const store = new mongoDBSession({
-  uri: process.env.MONGO_URI,
-  collection: "sessions",
-});
-const session_options = {
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  store,
-};
+app.set("view engine", "ejs");
 
 //middlewares
 app.use(express.json());
 app.use(express.static(__dirname + "/public"));
-app.use(session(session_options));
+app.use(sessionHandler());
 /*
 app.use(helmet());
 app.use(cors());
